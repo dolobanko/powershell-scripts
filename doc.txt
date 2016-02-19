@@ -1,0 +1,16 @@
+Get-ExecutionPolicy - показывает состояние политики разрешения выполнения скриптов в системе
+Get-Process  - показывает список процессов (like top)
+Get-Service #для получения статуса служб, запущенных на компьютерах
+Get-Content C:\Windows\System32\drivers\etc\hosts #для получения содержимого файла. В данном случае, файл hosts
+Get-Help -Category cmdlet - help по командлетах
+Get-ChildItem C:\Users\dola - тоже что и dir
+Get-ChildItem -Path C:\Windows | Where {$_.extension -eq ".dll"} - фильтрация по расширению *.dll
+Get-ChildItem -Path D:\Backup -Recurse -Include *.zip | Where-Object -FilterScript {($_.LastWriteTime -gt "2011-05-01") -and ($_.Length -ge 10mb) -and ($_.Length -le 100mb)} - поиск архивов в папке D:\Backup, созданных после 1 мая 2011 года, размер которых  находится в диапазоне 10-100 Мб
+Copy-Item -Path D:\Script\script—01.ps1 -Destination E:\Backup\27—09—2011\script—01.ps1 -копирование файла
+    - Force
+    - Recurse
+
+New-Item -Path ‘D:\Script\New Folder’ -ItemType "directory" - создание папки
+New-Item -Path ‘D:\Script\New Folder\script-02.ps1’ -ItemType "file" - создание файла
+Rename-Item .\File—01.ps1 .\File—01.ps1.bak - переименование файла
+Remove-Item d:\Backup\20—09—2011 -Recurse - удаление директории
