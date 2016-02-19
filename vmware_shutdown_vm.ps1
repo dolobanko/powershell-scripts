@@ -1,5 +1,16 @@
 #Switch to administrator level
-if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
+
+If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
+
+{   
+$arguments = "& '" + $myinvocation.mycommand.definition + "'"
+Start-Process powershell -Verb runAs -ArgumentList $arguments
+Break
+}
+
+#Create directory for vmlist file
+
+New-Item -ItemType directory -Force -Path C:\scripts\
 
 #Loading VMware Snap
 Add-PSSnapin VMware.VimAutomation.Core  
@@ -24,7 +35,7 @@ foreach {
                if ($vm.config.Tools.ToolsVersion -ne 0) {  
   
                    Write-Host "Graceful OS shutdown ++++++++ $strNewVMName ----"  
-                   Shutdown-VMGuest $strNewVMName -Confirm:$false  
+                   Stop-VMGuest $strNewVMName -Confirm:$false  
                    write-host "Sleeping ..." 
 		   Sleep 10
                }  
@@ -40,7 +51,7 @@ foreach {
 }  
   
 write-host "Sleeping ..."  
-Sleep 10  
+Sleep 600  
 
 #Set ESXi host in maintance mode
 Set-VMhost -VMhost $vcenter -State Maintenance
@@ -53,3 +64,8 @@ Write-Host "Shutdown Complete"
 
 #Disconnect vcenter server  
 disconnect-viserver $vcenter -Confirm:$false  
+
+# Exit
+Write-Host -NoNewLine "Press any key to quit..."
+
+$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
